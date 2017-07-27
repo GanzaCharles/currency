@@ -4,16 +4,15 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/*
- * Created by CharG on 5/24/2016.
- */
-public class DBHelper extends SQLiteOpenHelper {
+/* in brief: this class manages the database of the app. it creates, edits and deletes the currencies. all methods used herein can be reused */
+
+class DBHelper extends SQLiteOpenHelper {
+
     private static final String DATABASE_NAME = "currency_converter.db";
     private static final String TABLE_NAME = "Currencies";
     private static final String TAB_NAME_ONE = "USD";
@@ -37,20 +36,19 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private static final String NAME_COL = "CurrencyName";
     private static final String ID_COL = "_id";
-    private static final String ID_COLL = "_id";
     private static final String CurrencyName = "CurrencyName";
     private static final String toUSD = "toUSD";
     private static final String symbol = "symbol";
 
-    String[] tab_names = {TAB_NAME_ONE, TAB_NAME_TWO, TAB_NAME_THREE, TAB_NAME_FOUR, TAB_NAME_FIVE, TAB_NAME_SIX, TAB_NAME_SEVEN, TAB_NAME_EIGHT, TAB_NAME_NINE};
-    String[] tab_country_names = {TAB_NAME_ONE_COUNTRY, TAB_NAME_TWO_COUNTRY, TAB_NAME_THREE_COUNTRY, TAB_NAME_FOUR_COUNTRY, TAB_NAME_FIVE_COUNTRY, TAB_NAME_SIX_COUNTRY, TAB_NAME_SEVEN_COUNTRY, TAB_NAME_EIGHT_COUNTRY, TAB_NAME_NINE_COUNTRY};
-    double[] tab_usd_vals = {1, 0.87, 0.77, 3599, 845, 103, 2239, 17, 0.30};
+    private String[] tab_names = {TAB_NAME_ONE, TAB_NAME_TWO, TAB_NAME_THREE, TAB_NAME_FOUR, TAB_NAME_FIVE, TAB_NAME_SIX, TAB_NAME_SEVEN, TAB_NAME_EIGHT, TAB_NAME_NINE};
+    private String[] tab_country_names = {TAB_NAME_ONE_COUNTRY, TAB_NAME_TWO_COUNTRY, TAB_NAME_THREE_COUNTRY, TAB_NAME_FOUR_COUNTRY, TAB_NAME_FIVE_COUNTRY, TAB_NAME_SIX_COUNTRY, TAB_NAME_SEVEN_COUNTRY, TAB_NAME_EIGHT_COUNTRY, TAB_NAME_NINE_COUNTRY};
+    private double[] tab_usd_vals = {1, 0.87, 0.77, 3599, 845, 103, 2239, 17, 0.30};
 
-
-    public DBHelper(Context context) {
+    DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    // insert the currencies when the first is first launched using a for loop.
     @Override
     public void onCreate(SQLiteDatabase db) {
 
@@ -75,7 +73,8 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertCurrency(String name, String tousd) {
+    //method to insert the new currency in the database
+    void insertCurrency(String name, String tousd) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(NAME_COL, name);
@@ -83,7 +82,8 @@ public class DBHelper extends SQLiteOpenHelper {
         db.insert("Currencies", null, contentValues);
     }
 
-    public String getCurrencyValue(String name){
+    // string method to return the rate to USD of a given currency
+    String getCurrencyValue(String name){
 
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -103,15 +103,16 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    public void deleteCurrency(String currencyName) {
+    //method to delete the currency. gets passed the currency name to delete as an argument
+    void deleteCurrency(String currencyName) {
         SQLiteDatabase db = getWritableDatabase();
         String where = CurrencyName + " = ?";
         String[] whereArgs = { currencyName };
         db.delete("Currencies", where, whereArgs);
     }
 
-    //
-    public HashMap<String, String> currencies(){
+    // method to return the currency names and rate to USD (used in the settings activity)
+    HashMap<String, String> currencies(){
 
         HashMap<String, String> toReturn = new HashMap<>();
 
@@ -128,7 +129,8 @@ public class DBHelper extends SQLiteOpenHelper {
         return toReturn;
     }
 
-    public ArrayList<String> getCurrencyIds(){
+    // method to return all currencies row ids
+    ArrayList<String> getCurrencyIds(){
 
         ArrayList<String> toReturn = new ArrayList<>();
 
@@ -145,8 +147,8 @@ public class DBHelper extends SQLiteOpenHelper {
         return toReturn;
     }
 
-    //
-    public ArrayList<String> currenciesSymbol(){
+    // method to fetch all currencies and return them in a string array
+    ArrayList<String> currenciesSymbol(){
 
         ArrayList<String> toReturn = new ArrayList<>();
 
@@ -163,7 +165,8 @@ public class DBHelper extends SQLiteOpenHelper {
         return toReturn;
     }
 
-    public void updateCurrency(String oldName, String name, String values){
+    // method to update the currency, gets passed the old currency name, the new name and the values.
+    void updateCurrency(String oldName, String name, String values){
 
         SQLiteDatabase db = this.getReadableDatabase();
 

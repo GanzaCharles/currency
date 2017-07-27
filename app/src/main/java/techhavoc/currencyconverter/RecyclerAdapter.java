@@ -17,16 +17,14 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-/*
- * Created by Ghost Karl on 12/06/2016.
- */
+/* this class is a helper class that helps us to display the list containing the currencies, it's extended by settings class */
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.RecyclerViewHolder> {
+class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.RecyclerViewHolder> {
 
-    ArrayList<CurrencyData> currencies = new ArrayList<>();
-    Context ctx;
+    private ArrayList<CurrencyData> currencies = new ArrayList<>();
+    private Context ctx;
 
-    public RecyclerAdapter(ArrayList<CurrencyData> currencies, Context ctx){
+    RecyclerAdapter(ArrayList<CurrencyData> currencies, Context ctx){
 
         this.currencies = currencies;
         this.ctx = ctx;
@@ -69,7 +67,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
                         switch (it){
                             case "Edit":
 
-                                renameCurrency(cu_id, currencyName, currencyValue);
+                                renameCurrency(currencyName, currencyValue);
 
                                 break;
 
@@ -123,7 +121,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
                         switch (it){
                             case "Edit":
 
-                                renameCurrency(cu_id, currencyName, currencyValue);
+                                renameCurrency(currencyName, currencyValue);
 
                                 break;
 
@@ -204,9 +202,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
 
     }
 
-    private void renameCurrency(String id, String oldName, String value){
+    private void renameCurrency(String oldName, String value){
 
-        ((Settings) ctx).rename_Currency(id, oldName, value);
+        ((Settings) ctx).rename_Currency(oldName, value);
 
     }
 

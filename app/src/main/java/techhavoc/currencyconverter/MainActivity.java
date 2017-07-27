@@ -32,6 +32,8 @@ import android.widget.Toast;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
+/* this is the main class that controls other classes and the UI of the app */
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     RecyclerView recyclerView;
@@ -102,50 +104,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         populateSpinners();
 
-        switch (activeView){
-            case 1:
-                firstView.setBackgroundResource(R.drawable.active);
-                secondView.setBackgroundResource(R.drawable.listback_normal);
-                break;
-
-            case 2:
-                secondView.setBackgroundResource(R.drawable.active);
-                firstView.setBackgroundResource(R.drawable.listback_normal);
-                break;
-
-        }
-
-        /*firstView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                activeView = 1;
-                firstView.setBackgroundResource(R.drawable.active);
-                secondView.setBackgroundResource(R.drawable.listback_normal);
-                String curValue = currency_value.getText().toString();
-
-                if(!curValue.isEmpty()){
-                    first_currency_name.setText(curValue);
-                }
-
-            }
-        });*/
-
-        /*secondView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                activeView = 2;
-                secondView.setBackgroundResource(R.drawable.active);
-                firstView.setBackgroundResource(R.drawable.listback_normal);
-                String curValue = currency_value.getText().toString();
-
-                if(!curValue.isEmpty()){
-                    second_currency_name.setText(curValue);
-                }
-
-            }
-        });*/
+        firstView.setBackgroundResource(R.drawable.active);
+        secondView.setBackgroundResource(R.drawable.listback_normal);
 
         first_currency_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -182,6 +142,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+        /* here we set the text change listeners which help in calculating the amount of currency as the user types */
+
         currency_value.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -195,9 +157,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public void afterTextChanged(Editable s) {
-
-                switch (activeView){
-                    case 1:
 
                         if(firstSelectedCurrency.equals(secondSelectedCurrency)){
 
@@ -238,10 +197,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                                         }
 
-                                    } else { //not usd
+                                    } else {
 
                                         if(Double.parseDouble(rateToUSD) >= 1){
-                                            //multiply
 
                                             amount_d1 = amount_d1 * Double.parseDouble(rateToUSD);
                                             amountFinal = amount_d1 / amountFinal;
@@ -251,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             first_currency_name.setText(finalAmount.substring(0, finalAmount.lastIndexOf(".") + 3));
 
                                         } else {
-                                            //divide
+
                                             amount_d1 = amount_d1 / Double.parseDouble(rateToUSD);
                                             amountFinal = amount_d1 / amountFinal;
                                             finalAmount = new BigDecimal(amountFinal).stripTrailingZeros().toPlainString();
@@ -261,7 +219,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                                         }
 
-                                        //String finalAmount = convertCurrency(amount_d1, rate1, rate2);
 
                                     }
 
@@ -288,16 +245,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             }
 
                         }
-
-                        break;
-
-                }
-
             }
         });
 
     }
 
+    /*
+    * this method converts the currency like this: if the operation is not from USD to x-currency, we first convert it to USD,
+    * then convert the currency to the final currency using its rate to USD
+    */
     public void convertCurrency(){
 
         switch (activeView){
@@ -457,6 +413,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    /*
+    * method to display a new currency dialog. accepts the currency name and its rate to USD
+    */
     public void newCurrencyDialog(){
 
         final Dialog dialog = new Dialog(MainActivity.this);
@@ -509,6 +468,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    // method to load data into the spinners. can be called anytime to update them
     public void populateSpinners(){
 
         final ArrayList<String> currencyNamesArray = dbhelp.currenciesSymbol();
@@ -523,6 +483,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    //check the intent result from the settings activity, this helps determine whether or not we should update the spinners (when currencies are edited or deleted)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -545,6 +506,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    // start the settings activity when the user clicks on the Settings menu item in the navigation drawer
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -555,7 +517,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 Intent im = new Intent(MainActivity.this, Settings.class);
                 im.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                //startActivity(im);
                 startActivityForResult(im, 1);
 
                 break;

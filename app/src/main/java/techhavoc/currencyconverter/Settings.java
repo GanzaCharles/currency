@@ -16,10 +16,11 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+/* this class helps to display and manipulate the list of currencies, with the help of recycleradapter class */
 
 public class Settings extends AppCompatActivity {
 
@@ -54,6 +55,7 @@ public class Settings extends AppCompatActivity {
         
         populateView();
 
+        // show the loading cycle for 2 seconds as the currencies list is refreshing, then close it (fires when the user pulls down to refresh)
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -73,6 +75,7 @@ public class Settings extends AppCompatActivity {
 
     }
 
+    // method to load data into the recyclerview. uses the object of dbhelp to get access to methods that return requested data
     public void populateView(){
 
         final HashMap<String, String> currencyNamesArray = dbhelp.currencies();
@@ -101,6 +104,7 @@ public class Settings extends AppCompatActivity {
 
     }
 
+    // method to remove the currency from the database as well as the view. sets the action to true so that the mainactivity will update the currencies.
     public void removeCurrency(String currencyName){
 
         dbhelp.deleteCurrency(currencyName);
@@ -108,7 +112,8 @@ public class Settings extends AppCompatActivity {
 
     }
 
-    public void rename_Currency(final String id, final String oldName, final String value){
+    // method to rename the currencies
+    public void rename_Currency(final String oldName, final String value){
 
         final Dialog dialog = new Dialog(Settings.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -131,7 +136,6 @@ public class Settings extends AppCompatActivity {
                 String currency_value = currency_value_text_box.getText().toString();
 
                 final ArrayList<String> currencyNamesArray = dbhelp.currenciesSymbol();
-                boolean checkExistence =  currencyNamesArray.contains(currency_name);
 
                 if (!currency_name.isEmpty() && !currency_name.equals("android_metadata") && !currency_value.isEmpty() && currency_name.length() >= 2) {
 
